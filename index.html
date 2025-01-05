@@ -590,14 +590,9 @@
 </head>
 <body>
     <div class="youtube-container">
-        <iframe 
-            class="youtube-background"
-            src="https://www.youtube.com/embed/CR_I0dxUuZU?autoplay=1&mute=1&loop=1&playlist=CR_I0dxUuZU&controls=0&autoplay=1"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-        </iframe>
+        <div id="youtube-player"></div>
     </div>
+    <div class="youtube-overlay"></div>
 
     <header class="header">
         <nav class="nav">
@@ -831,6 +826,7 @@
         </div>
     </footer>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -989,30 +985,82 @@ document.querySelectorAll('.fade-element').forEach(element => {
     observer.observe(element);
 });
 
-document.addEventListener('click', function() {
-    const iframe = document.querySelector('iframe');
-    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-}, { once: true });
+let player;
+        
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                videoId: 'CR_I0dxUuZU', // あなたの動画ID
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    autohide: 1,
+                    modestbranding: 1,
+                    mute: 1,
+                    playlist: 'CR_I0dxUuZU', // 同じ動画IDを指定してループを有効に
+                    enablejsapi: 1,
+                    rel: 0,
+                    playsinline: 1,
+                    fs: 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // iOS Safari対応
-    if (typeof document.hidden !== "undefined") {
-        document.addEventListener("visibilitychange", function() {
-            if (document.hidden) {
-                document.querySelector('iframe').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            } else {
-                document.querySelector('iframe').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        function onPlayerReady(event) {
+            event.target.mute();
+            event.target.playVideo();
+            
+            // ビデオサイズを設定
+            resizeVideo();
+            // ウィンドウリサイズ時にビデオサイズを調整
+            window.addEventListener('resize', resizeVideo);
+        }
+
+        function onPlayerStateChange(event) {
+            // 動画が終了したらループ再生
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo();
             }
+        }
+
+        function onPlayerError(event) {
+            console.error('YouTube Player Error:', event.data);
+        }
+
+        function resizeVideo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const aspectRatio = 16/9;
+
+            let newWidth = width;
+            let newHeight = width / aspectRatio;
+
+            if (newHeight < height) {
+                newHeight = height;
+                newWidth = height * aspectRatio;
+            }
+
+            if (player && player.setSize) {
+                player.setSize(newWidth, newHeight);
+            }
+        }
+
+        // Chrome の自動再生対策
+        document.addEventListener('DOMContentLoaded', function() {
+            // ユーザーインタラクションで再生を試みる
+            document.addEventListener('click', function initiatePlay() {
+                if (player && typeof player.playVideo === 'function') {
+                    player.playVideo();
+                    document.removeEventListener('click', initiatePlay);
+                }
+            });
         });
-    }
-
-    // Chrome自動再生対応
-    const iframe = document.querySelector('iframe');
-    iframe.addEventListener('load', function() {
-        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-    });
-});
-
     </script>
 </body>
 </html>
