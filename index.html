@@ -432,6 +432,12 @@
     opacity: 0.2;
 }
 
+@media (min-width: 1025px) {
+    .section.visible .fade-in-image {
+        transform: translateX(-73%); /* 元の位置に移動 */
+    }
+}
+
 .fade-in-image2 {
    position: absolute;
    bottom: -100%; /* 画面外から開始 */
@@ -456,16 +462,16 @@
     .fade-in-image {
         position: absolute;
         top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    overflow: hidden;
-    transform: translateX(0);
-    transition: transform 0.8s ease-out;
-    z-index: 1;
-    display: flex;           /* 追加 */
-    justify-content: center; /* 追加 */
-    align-items: center;     /* 追加 */
+        right: 0;
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        transform: translateX(0);
+        transition: transform 0.8s ease-out;
+        z-index: 1;
+        display: flex;           /* 追加 */
+        justify-content: center; /* 追加 */
+        align-items: center;     /* 追加 */
     }
     
     .fade-in-image img {
@@ -489,9 +495,7 @@
     padding: 0 2rem;
 }
 
-.section.visible .fade-in-image {
-    transform: translateX(-73%); /* 元の位置に移動 */
-}
+
 
 .section.visible .fade-in-image2 {
     bottom: 0;
