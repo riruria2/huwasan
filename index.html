@@ -85,10 +85,13 @@
         }
 
         .nav-logo {
-            font-size: 1.8rem;
+            font-size: clamp(1rem, 2vw, 1.8rem); /* 最小1rem、最大1.8rem、画面幅に応じて調整 */
             font-weight: bold;
             white-space: nowrap;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 40vw; /* 画面幅の40%を超えない */
         }
 
         .nav-menu {
@@ -264,9 +267,17 @@
             z-index: 1;
         }
 
+        @media (max-width: 1024px) {
+            .nav-logo {
+                max-width: 50vw;
+                font-size: clamp(0.9rem, 1.5vw, 1.4rem);
+            }
+        }
+
         @media (max-width: 768px) {
             .nav-logo {
-                font-size: 1.2rem;
+                max-width: 60vw;
+                font-size: clamp(0.8rem, 1.2vw, 1.2rem);
             }
 
             .nav-menu {
