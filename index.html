@@ -469,10 +469,12 @@
     }
     
     .fade-in-image img {
+        position: relative;     /* absolute から relative に変更 */
+        right: 0;
+        height: 90%;          /* 100% から 90% に変更して余白を作る */
         width: auto;
-        height: auto; /* モバイルでは高さを自動調整 */
-        max-height: 100%; /* 最大高さを設定 */
-        object-position: center; /* 中央に配置 */
+        object-fit: contain;
+        opacity: 0.2;
     }
 
     .section.visible .fade-in-image {
