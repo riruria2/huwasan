@@ -409,22 +409,26 @@
         }
 
         .fade-in-image {
-    position: absolute;
+            position: absolute;
     top: 0;
     right: 0;
-    width: 0;
+    width: 40%;
     height: 100%;
     overflow: hidden;
-    transition: width 0.8s ease-out;
+    transform: translateX(200%);
+    transition: transform 0.8s ease-out;
     z-index: 1;
+    display: flex;           /* 追加 */
+    justify-content: center; /* 追加 */
+    align-items: center;     /* 追加 */
 }
 
 .fade-in-image img {
-    position: absolute; /* 追加 */
-    right: 61%; /* 追加 - 画像を右寄せ */
-    width: 40%;
-    height: 100%;
-    object-fit: cover;
+    position: relative;     /* absolute から relative に変更 */
+    right: 0;
+    height: 90%;          /* 100% から 90% に変更して余白を作る */
+    width: auto;
+    object-fit: contain;
     opacity: 0.2;
 }
 
@@ -448,6 +452,18 @@
     opacity: 0.2;
 }
 
+@media (max-width: 768px) {
+    .fade-in-image {
+        width: 100%;
+    }
+    
+    .fade-in-image img {
+        width: 100%;
+        height: auto; /* モバイルでは高さを自動調整 */
+        max-height: 100%; /* 最大高さを設定 */
+    }
+}
+
 .section-content {
     position: relative;
     z-index: 2;
@@ -456,7 +472,7 @@
 }
 
 .section.visible .fade-in-image {
-    width: 60%;
+    transform: translateX(-73%); /* 元の位置に移動 */
 }
 
 .section.visible .fade-in-image2 {
@@ -584,14 +600,6 @@
     .social-icon {
         width: 18px;
         height: 18px;
-    }
-
-    .fade-in-image {
-        position: relative;
-        width: 100%;
-        height: 300px;
-        right: -100%;
-        margin-bottom: 2rem;
     }
 }
 
