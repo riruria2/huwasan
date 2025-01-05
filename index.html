@@ -454,7 +454,18 @@
 
 @media (max-width: 1024px){
     .fade-in-image {
-        width: 50%;
+        position: absolute;
+        top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transform: translateX(200%);
+    transition: transform 0.8s ease-out;
+    z-index: 1;
+    display: flex;           /* 追加 */
+    justify-content: center; /* 追加 */
+    align-items: center;     /* 追加 */
     }
     
     .fade-in-image img {
@@ -465,7 +476,7 @@
     }
 
     .section.visible .fade-in-image {
-        transform: translateX(10%); /* 元の位置に移動 */
+        transform: translateX(-70%); /* 元の位置に移動 */
     }
 }
 
