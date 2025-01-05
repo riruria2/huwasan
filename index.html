@@ -29,14 +29,15 @@
             overflow: hidden;
         }
 
-        .youtube-container iframe {
+        #youtube-player {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
+            min-width: 100vw;
+            min-height: 100vh;
+            opacity: 1.0; /* 動画の透明度を調整 */
+            transform: translate(-50%, -50%) scale(1.15); /* スケールアップ */
         }
 
         .youtube-background {
@@ -985,11 +986,11 @@ document.querySelectorAll('.fade-element').forEach(element => {
     observer.observe(element);
 });
 
-let player;
+        let player;
         
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                videoId: 'CR_I0dxUuZU', // あなたの動画ID
+                videoId: 'CR_I0dxUuZU',
                 playerVars: {
                     autoplay: 1,
                     loop: 1,
@@ -998,11 +999,13 @@ let player;
                     autohide: 1,
                     modestbranding: 1,
                     mute: 1,
-                    playlist: 'CR_I0dxUuZU', // 同じ動画IDを指定してループを有効に
+                    playlist: 'CR_I0dxUuZU',
                     enablejsapi: 1,
                     rel: 0,
                     playsinline: 1,
-                    fs: 0
+                    fs: 0,
+                    origin: window.location.origin,
+                    widget_referrer: window.location.href
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -1015,15 +1018,11 @@ let player;
         function onPlayerReady(event) {
             event.target.mute();
             event.target.playVideo();
-            
-            // ビデオサイズを設定
             resizeVideo();
-            // ウィンドウリサイズ時にビデオサイズを調整
             window.addEventListener('resize', resizeVideo);
         }
 
         function onPlayerStateChange(event) {
-            // 動画が終了したらループ再生
             if (event.data === YT.PlayerState.ENDED) {
                 player.playVideo();
             }
@@ -1041,10 +1040,15 @@ let player;
             let newWidth = width;
             let newHeight = width / aspectRatio;
 
+            // 画面の高さより動画が短い場合は、高さに合わせる
             if (newHeight < height) {
                 newHeight = height;
                 newWidth = height * aspectRatio;
             }
+
+            // サイズを少し大きめに設定して黒帯を消す
+            newWidth *= 5.0;
+            newHeight *= 5.0;
 
             if (player && player.setSize) {
                 player.setSize(newWidth, newHeight);
@@ -1053,7 +1057,6 @@ let player;
 
         // Chrome の自動再生対策
         document.addEventListener('DOMContentLoaded', function() {
-            // ユーザーインタラクションで再生を試みる
             document.addEventListener('click', function initiatePlay() {
                 if (player && typeof player.playVideo === 'function') {
                     player.playVideo();
